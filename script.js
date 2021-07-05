@@ -2,8 +2,12 @@
 const inputBox = document.getElementById('input')
 inputBox.textContent = ``
 
+// global variable containing all variables
+var variables = {}
+
 // event listener for auto translate on input change
 document.getElementById('input').addEventListener('keyup', (e) => {
+  variables = {}
   startTranslation()
 })
 
@@ -45,6 +49,8 @@ function convertToRegex(input) {
   var output = ''
 
   lines = escape(input)
+
+  lines = evaluateVariables(lines)
 
   lines.forEach(line => {
     const tokens = line.split(' ')
@@ -202,9 +208,9 @@ const escape = (input) => {
     '(',
     ')',
     '[',
-	']',
-	'{',
-	'}',
+    ']',
+    '{',
+    '}',
     '$',
     '&',
     '|',
@@ -216,6 +222,73 @@ const escape = (input) => {
     if(line.match(/^regex/)) return line
     return (line.split(' ').map(c => escapables.includes(c) ? `\\${c}` : c)).join(' ')
   })
+}
+
+/**
+ * Evaluate all the variables, save them in the 'variables' global variable,
+ * and replaces all occurences of them with their RegEx equivalent
+ * @param {Array} lines The array of lines
+ * @returns The new array of lines with the variable declarations removed and the variables evaluated
+ */
+const evaluateVariables = (lines) => {
+  var variable_contents = []
+  var isVariable = false
+  var variable_name = ''
+
+  lines.forEach((line, i) => {
+    const tokens = line.split(' ')
+
+    if(tokens[0] === 'variable') {
+      // variable end
+      if(isVariable) {
+        var output = ''
+
+        // evaluate the value of the variable
+        variable_contents.forEach(line => {
+          const tokens = line.split(' ')
+      
+          output += evaluateLine(tokens)
+        })
+      
+        output = replaceCharGroups(output)
+      
+        variables[variable_name] = output
+
+        // clear variable contents for the next possible variable
+        variable_contents = []
+        delete lines[i]
+        isVariable = false
+      }
+      // variable start
+      else {
+        // create a new empty key in variables
+        variables[tokens[1]] = ''
+        variable_name = tokens[1]                       // save variable name
+
+        isVariable = true
+        delete lines[i]
+      }
+    }
+    else if(isVariable) {
+      variable_contents.push(lines[i])
+      delete lines[i]
+    }
+  })
+
+  // replace all occurences of variable names with their regex equivalent
+  lines.forEach((line, i) => {
+    const tokens = line.split(' ')
+
+    lines[i] = (tokens.map((token, j) => {
+      if(Object.keys(variables).includes(token)) return variables[token]
+      return token
+    })).join(' ')
+  })
+
+  // remove all empty entries from delete, and remove all empty strings as well
+  lines = lines.filter(line => line != false)
+
+  return lines
 }
 
 const replaceCharGroups = (str) => {
@@ -239,7 +312,6 @@ const replaceCharGroups = (str) => {
 
   Object.keys(shorthands).forEach(key => {
     const re = new RegExp('\\(*:' + key + ':\\)*', 'g')
-    // console.log(re)
     str = str.replace(re, shorthands[key])
   })
 

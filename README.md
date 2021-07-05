@@ -6,7 +6,7 @@ Demo: https://regular-impressions.netlify.app/
 
 ## How to use
 
-- Commands should strictly be written one command per line.
+- Commands should strictly be written one command per line unless the commands are nested.
 - Symbols and punctuations DO NOT need to be escaped.
 - Multiple commands are concatenated using line breaks.
 - See next section for list of commands.
@@ -45,6 +45,11 @@ repeat a 1 to inf
 ```
 
 - Match the start of a line using the `start` command and the end of the line using the `end` command.
+```
+start						RegEx: ^(text){2,}$
+repeat text 2 to inf
+end
+```
 
 - Match either of two or more words by writing them separated by `or`.
 To put an `or` between two commands, put the `or` in a new line between the two commands.
@@ -63,6 +68,17 @@ name ifnextis passed				RegEx: name(?=passed)
 name ifnextisnot failed				RegEx: name(?!failed)
 name ifprevis from				RegEx: name(?<=from)
 name ifprevisnot to				RegEx: name(?<!to)
+```
+
+#### Variables
+Multiple commands can be reused by assigning it to a variable. Variables start with the `variable` command followed by the name of the variable. Succeeding lines are the contents of the variable, and the last line should be `variable`, indicating the end of the declaration.
+```
+variable gerund
+repeat :lowercase: 1 to inf
+ing
+variable
+
+repeat gerund 0 to 1				RegEx evaluates to: ([a-z]+ing)?
 ```
 
 ## List of shorthands
