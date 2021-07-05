@@ -7,6 +7,28 @@ document.getElementById('input').addEventListener('keyup', (e) => {
   startTranslation()
 })
 
+const copyToClipboard = () => {
+  var elm = document.getElementById("output");
+  
+  // for Internet Explorer
+  if(document.body.createTextRange) {
+    var range = document.body.createTextRange();
+    range.moveToElementText(elm);
+    range.select();
+  }
+
+  // other browsers
+  else if(window.getSelection) {
+    var selection = window.getSelection();
+    var range = document.createRange();
+    range.selectNodeContents(elm);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  document.execCommand("Copy");
+}
+
 function startTranslation() {
   const outputBox = document.getElementById('output')
   outputBox.innerText = 'Error'
