@@ -1,0 +1,50 @@
+const shorthands =  {
+  digit: '[0-9]',
+  lowercase: '[a-z]',
+  uppercase: '[A-Z]',
+  letter: '[a-zA-Z]',
+  alphanumeric: '[a-zA-Z0-9]',
+  any: '.',
+  whitespace: '\\s',
+  notwhitespace: '\\S',
+  word: '\\w',
+  notword: '\\W',
+  tab: '\\t',
+  return: '\\r',
+  newline: '\\n',
+  boundary: '\\b',
+  notboundary: '\\B'
+}
+
+const escapables = [
+  '*',
+  '+',
+  '?',
+  '\\',
+  '.',
+  '^',
+  '(',
+  ')',
+  '[',
+  ']',
+  '{',
+  '}',
+  '$',
+  '&',
+  '|',
+]
+
+const reserved = [
+  'anyexcept',
+  'anyof',
+  'comment',
+  'end',
+  'ifnextis',
+  'ifnextisnot',
+  'ifprevis',
+  'ifprevisnot',
+  'or',
+  'regex',
+  'repeat',
+  'start',
+]

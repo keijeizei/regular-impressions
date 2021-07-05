@@ -198,24 +198,6 @@ const enclose = (str) => {
  * @returns An array split into lines with its escapable characters appended with a \
  */
 const escape = (input) => {
-  const escapables = [
-    '*',
-    '+',
-    '?',
-    '\\',
-    '.',
-    '^',
-    '(',
-    ')',
-    '[',
-    ']',
-    '{',
-    '}',
-    '$',
-    '&',
-    '|',
-  ]
-
   const lines = input.split('\n')
   return lines.map(line => {
     // ignore lines starting with 'regex'
@@ -261,6 +243,9 @@ const evaluateVariables = (lines) => {
       }
       // variable start
       else {
+        // reserved keyword variable names are not allowed
+        if(reserved.includes(tokens[1])) throw Error
+        
         // create a new empty key in variables
         variables[tokens[1]] = ''
         variable_name = tokens[1]                       // save variable name
@@ -292,23 +277,6 @@ const evaluateVariables = (lines) => {
 }
 
 const replaceCharGroups = (str) => {
-  const shorthands = {
-    digit: '[0-9]',
-    lowercase: '[a-z]',
-    uppercase: '[A-Z]',
-    letter: '[a-zA-Z]',
-    alphanumeric: '[a-zA-Z0-9]',
-    any: '.',
-  	whitespace: '\\s',
-    notwhitespace: '\\S',
-    word: '\\w',
-	  notword: '\\W',
-	  tab: '\\t',
-    return: '\\r',
-    newline: '\\n',
-    boundary: '\\b',
-    notboundary: '\\B'
-  }
 
   Object.keys(shorthands).forEach(key => {
     const re = new RegExp('\\(*:' + key + ':\\)*', 'g')
