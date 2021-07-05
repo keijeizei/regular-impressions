@@ -61,11 +61,26 @@ const evaluateLine = (tokens) => {
     output += enclose(temp_out)
   }
 
+  else if(tokens[1] === 'ifnextis') {
+    output += `${tokens[0]}(?=${evaluateLine(tokens.slice(2))}))`
+  }
+
+  else if(tokens[1] === 'ifnextisnot') {
+    output += `${tokens[0]}(?!${evaluateLine(tokens.slice(2))}))`
+  }
+
+  else if(tokens[1] === 'ifprevis') {
+    output += `${tokens[0]}(?<=${evaluateLine(tokens.slice(2))}))`
+  }
+
+  else if(tokens[1] === 'ifprevisnot') {
+    output += `${tokens[0]}(?<!${evaluateLine(tokens.slice(2))}))`
+  }
+
   else {
     tokens.forEach(token => {
-      output += token + ' '
+      output += token
     })
-    output = output.slice(0, output.length - 1)   // remove extra space
   }
 
   return output
@@ -195,6 +210,8 @@ const replaceCharGroups = (str) => {
 	  tab: '\\t',
     return: '\\r',
     newline: '\\n',
+    boundary: '\\b',
+    notboundary: '\\B'
   }
 
   Object.keys(shorthands).forEach(key => {

@@ -14,6 +14,7 @@ body {
   width: 96%;
   height: 20em;
   padding: 1em;
+  resize: vertical;
 }
 
 #output {

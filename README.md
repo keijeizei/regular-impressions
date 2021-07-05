@@ -52,6 +52,15 @@ repeat a 1 to inf
 cash or money					RegEx: (cash|money)
 ```
 
+- Match a word only if it is followed by another word using the `ifnextis` command. This is also known as lookahead assertion.
+Other assertions include `ifnextisnot` (negative lookahead assertion), `ifprevis` (lookbehind assertion), and `ifprevisnot` (negative lookbehind assertion)
+```
+name ifnextis pass				RegEx: name(?=pass)
+name ifnextisnot fail				RegEx: name(?!fail)
+name ifprevis from				RegEx: name(?<=from)
+name ifprevisnot from				RegEx: name(?<!done)
+```
+
 ## List of shorthands
 
 Shorthands are written inside `:` and are shorthands for some character groups and have descriptive names.
