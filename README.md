@@ -1,6 +1,6 @@
 # Regular Impressions
 
-A simple tool for writing regular expressions using pseudocode-like text.
+A simple tool for writing regular expressions using pseudocode-like text. This project is under development.
 
 ## How to use
 
@@ -45,15 +45,15 @@ Shorthands are written inside `:` and are shorthands for some character groups a
 
 ```
 :digit:							RegEx: [0-9]
-:lowercase: 					RegEx: [a-z]
+:lowercase: 						RegEx: [a-z]
 :uppercase:						RegEx: [A-Z]
 :letter:						RegEx: [a-zA-Z]
-:alphanumeric:					RegEx: [a-zA-Z0-9]
+:alphanumeric:						RegEx: [a-zA-Z0-9]
 :any:							RegEx: .
-:whitespace:					RegEx: \s
-:notwhitespace:					RegEx: \S
-word:							RegEx: \w
-notword: 						RegEx: \W
+:whitespace:						RegEx: \s
+:notwhitespace:						RegEx: \S
+:word:							RegEx: \w
+:notword: 						RegEx: \W
 ```
 
 ## Examples
@@ -74,4 +74,16 @@ repeat :digit: 0 to inf
 repeat . 0 to 1
 repeat :digit: 1 to inf
 end
+```
+
+Simplified Domain name pattern
+```
+start
+http
+repeat s 0 to 1
+://
+repeat www. 0 to 1
+repeat :alphanumeric: 1 to 63
+.
+repeat :letter: 2 to 6
 ```
