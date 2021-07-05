@@ -184,6 +184,7 @@ const replaceCharGroups = (str) => {
 	  notword: '\\W',
 	  tab: '\\t',
     return: '\\r',
+    newline: '\\n',
   }
 
   Object.keys(charGroups).forEach(key => {
