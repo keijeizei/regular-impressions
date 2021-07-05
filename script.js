@@ -22,9 +22,7 @@ function startTranslation() {
 function convertToRegex(input) {
   var output = ''
 
-  input = escape(input)
-
-  const lines = input.split('\n')
+  lines = escape(input)
 
   lines.forEach(line => {
     const tokens = line.split(' ')
@@ -49,6 +47,8 @@ const evaluateLine = (tokens) => {
   if(tokens[0] === 'anyexcept') output += anyexcept(tokens)
 
   if(tokens[0] === 'anyof') output += anyof(tokens)
+
+  if(tokens[0] === 'regex') output += regex(tokens)
 
   if(tokens[0] === 'repeat') output += repeat(tokens)
 
@@ -86,6 +86,10 @@ const anyexcept = (tokens) => {
   output.unshift('[', '^')
   output.push(']')
   return output.join('')
+}
+
+const regex = (tokens) => {
+  return tokens[1]
 }
 
 const repeat = (tokens) => {
@@ -137,7 +141,7 @@ const enclose = (str) => {
 /**
  * Scans an input string and escape all the characters that are to be escaped
  * @param {String} input The input to be scanned
- * @returns The string with its escapable characters appended with a \
+ * @returns An array split into lines with its escapable characters appended with a \
  */
 const escape = (input) => {
   const escapables = [
@@ -157,9 +161,14 @@ const escape = (input) => {
     '&',
     '|',
   ]
-  return (input.split('').map(c => escapables.includes(c) ? `\\${c}` : c)).join('')
-}
 
+  const lines = input.split('\n')
+  return lines.map(line => {
+    // ignore lines starting with 'regex'
+    if(line.match(/^regex/)) return line
+    return (line.split(' ').map(c => escapables.includes(c) ? `\\${c}` : c)).join(' ')
+  })
+}
 
 const replaceCharGroups = (str) => {
   const charGroups = {
@@ -171,8 +180,10 @@ const replaceCharGroups = (str) => {
     any: '.',
   	whitespace: '\\s',
     notwhitespace: '\\S',
-    word: '\w',
-    notword: '\W',
+    word: '\\w',
+	  notword: '\\W',
+	  tab: '\\t',
+    return: '\\r',
   }
 
   Object.keys(charGroups).forEach(key => {

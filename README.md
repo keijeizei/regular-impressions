@@ -1,6 +1,7 @@
 # Regular Impressions
 
 A simple tool for writing regular expressions using pseudocode-like text. This project is under development.
+Demo: https://regular-impressions.netlify.app/
 
 ## How to use
 
@@ -11,7 +12,7 @@ A simple tool for writing regular expressions using pseudocode-like text. This p
 
 ## List of commands
 
-Match repeating patterns using the `repeat` command followed by the pattern and the range of repetition
+- Match repeating patterns using the `repeat` command followed by the pattern and the range of repetition
 
 Use the `inf` keyword to specify an infinite upper bound.
 
@@ -20,21 +21,26 @@ repeat text 1 to 5				RegEx: (text){1, 5}
 repeat sample 0 to inf				RegEx: (sample)*
 ```
 
-Match a character from a list of characters using the `anyof` command followed by the characters separated by spaces.
+- Match a character from a list of characters using the `anyof` command followed by the characters separated by spaces.
 
 ```
 anyof q w e r t y				RegEx: [qwerty]
 ```
 
-Match any character not from a list of characters using the `anyexcept` command followed by the characters separated by spaces.
+- Match any character not from a list of characters using the `anyexcept` command followed by the characters separated by spaces.
 
 ```
 anyexcept a e i o u				RegEx: [^aeiou]
 ```
 
-Match the start of a line using the `start` command and the end of the line using the `end` command.
+- Enter a regular expression using the `regex` command.
+```
+regex repeat\n					RegEx: repeat\n
+```
 
-Match either of two or more words by writing them separated by `or`.
+- Match the start of a line using the `start` command and the end of the line using the `end` command.
+
+- Match either of two or more words by writing them separated by `or`.
 ```
 cash or money					RegEx: (cash|money)
 ```
@@ -55,6 +61,12 @@ Shorthands are written inside `:` and are shorthands for some character groups a
 :word:							RegEx: \w
 :notword: 						RegEx: \W
 ```
+
+|               | RegEx   |
+|---------------|---------|
+| `:digit:`     | `[0-9]` |
+| `:lowercase:` | `[a-z]` |
+| `:uppercase:` | `[A-Z]` |
 
 ## Examples
 Simplified email pattern
@@ -86,4 +98,5 @@ repeat www. 0 to 1
 repeat :alphanumeric: 1 to 63
 .
 repeat :letter: 2 to 6
+end
 ```
