@@ -14,7 +14,6 @@ Demo: https://regular-impressions.netlify.app/
 ## List of commands
 
 - Match repeating patterns using the `repeat` command followed by the pattern and the range of repetition.
-
 Use the `inf` keyword to specify an infinite upper bound.
 
 ```
@@ -55,10 +54,10 @@ cash or money					RegEx: (cash|money)
 - Match a word only if it is followed by another word using the `ifnextis` command. This is also known as lookahead assertion.
 Other assertions include `ifnextisnot` (negative lookahead assertion), `ifprevis` (lookbehind assertion), and `ifprevisnot` (negative lookbehind assertion)
 ```
-name ifnextis pass				RegEx: name(?=pass)
-name ifnextisnot fail				RegEx: name(?!fail)
+name ifnextis passed				RegEx: name(?=passed)
+name ifnextisnot failed				RegEx: name(?!failed)
 name ifprevis from				RegEx: name(?<=from)
-name ifprevisnot from				RegEx: name(?<!done)
+name ifprevisnot to				RegEx: name(?<!to)
 ```
 
 ## List of shorthands
