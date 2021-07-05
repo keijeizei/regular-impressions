@@ -47,8 +47,13 @@ repeat a 1 to inf
 - Match the start of a line using the `start` command and the end of the line using the `end` command.
 
 - Match either of two or more words by writing them separated by `or`.
+To put an `or` between two commands, put the `or` in a new line between the two commands.
 ```
 cash or money					RegEx: (cash|money)
+
+repeat text 0 to 1				RegEx: (text)?|(text){1,2}
+or
+repeat text 1 to 2
 ```
 
 - Match a word only if it is followed by another word using the `ifnextis` command. This is also known as lookahead assertion.
@@ -62,7 +67,7 @@ name ifprevisnot to				RegEx: name(?<!to)
 
 ## List of shorthands
 
-Shorthands are written inside `:` and are shorthands for some character groups and have descriptive names.
+Shorthands are written inside `:` and are shorthands for some character groups. While most of them takes more time to type than their RegEx counterparts, they are more descriptive and easier to remember.
 
 | Shorthand         | RegEx         |
 |-------------------|---------------|
@@ -79,6 +84,8 @@ Shorthands are written inside `:` and are shorthands for some character groups a
 | `:tab:`           | `\t`          |
 | `:return:`        | `\r`          |
 | `:newline:`       | `\n`          |
+| `:boundary:`      | `\b`          |
+| `:notboundary:`   | `\B`          |
 
 ## Examples
 Simplified email pattern

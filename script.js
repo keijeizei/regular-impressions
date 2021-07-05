@@ -63,6 +63,7 @@ const evaluateLine = (tokens) => {
   if(tokens.length === 1) {
     if(tokens[0] === 'start') return '^'
     if(tokens[0] === 'end') return '$'
+    if(tokens[0] === 'or') return '|'
     return tokens[0]
   }
 
