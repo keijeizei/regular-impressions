@@ -46,22 +46,32 @@ const evaluateLine = (tokens) => {
 
   if(tokens[0] === 'anyexcept') output += anyexcept(tokens)
 
-  if(tokens[0] === 'anyof') output += anyof(tokens)
+  else if(tokens[0] === 'anyof') output += anyof(tokens)
 
-  if(tokens[0] === 'regex') output += regex(tokens)
+  else if(tokens[0] === 'comment') output += ''
 
-  if(tokens[0] === 'repeat') output += repeat(tokens)
+  else if(tokens[0] === 'regex') output += regex(tokens)
 
-  if(tokens[1] === 'or') {
+  else if(tokens[0] === 'repeat') output += repeat(tokens)
+
+  else if(tokens[1] === 'or') {
     var temp_out = ''
     temp_out += `${tokens[0]}|`
     temp_out += evaluateLine(tokens.slice(2))
     output += enclose(temp_out)
   }
 
+  else {
+    tokens.forEach(token => {
+      output += token + ' '
+    })
+    output = output.slice(0, output.length - 1)   // remove extra space
+  }
+
   return output
 }
 
+/* ---------------COMMANDS--------------- */
 const anyof = (tokens) => {
   tokens.shift()
 
@@ -171,7 +181,7 @@ const escape = (input) => {
 }
 
 const replaceCharGroups = (str) => {
-  const charGroups = {
+  const shorthands = {
     digit: '[0-9]',
     lowercase: '[a-z]',
     uppercase: '[A-Z]',
@@ -187,10 +197,10 @@ const replaceCharGroups = (str) => {
     newline: '\\n',
   }
 
-  Object.keys(charGroups).forEach(key => {
+  Object.keys(shorthands).forEach(key => {
     const re = new RegExp('\\(*:' + key + ':\\)*', 'g')
     // console.log(re)
-    str = str.replace(re, charGroups[key])
+    str = str.replace(re, shorthands[key])
   })
 
   return str

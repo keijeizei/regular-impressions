@@ -13,7 +13,7 @@ Demo: https://regular-impressions.netlify.app/
 
 ## List of commands
 
-- Match repeating patterns using the `repeat` command followed by the pattern and the range of repetition
+- Match repeating patterns using the `repeat` command followed by the pattern and the range of repetition.
 
 Use the `inf` keyword to specify an infinite upper bound.
 
@@ -37,6 +37,12 @@ anyexcept a e i o u				RegEx: [^aeiou]
 - Enter a regular expression using the `regex` command.
 ```
 regex repeat\n					RegEx: repeat\n
+```
+
+- Enter a comment using the `comment` command followed by your comment.
+```
+comment The line below means one or more 'a'
+repeat a 1 to inf
 ```
 
 - Match the start of a line using the `start` command and the end of the line using the `end` command.
@@ -86,7 +92,7 @@ repeat :digit: 1 to inf
 end
 ```
 
-Simplified Domain name pattern
+Simplified domain name pattern
 ```
 start
 http
