@@ -69,7 +69,7 @@ function convertToRegex(input) {
   return output
 }
 
-const evaluateLine = (tokens) => {
+const evaluateLine = (tokens, fromOr) => {
   var output = ''
   if(tokens.length === 1) {
     if(tokens[0] === 'start') return '^'
@@ -90,12 +90,7 @@ const evaluateLine = (tokens) => {
 
   else if(tokens[0] === 'repeat') output += repeat(tokens)
 
-  else if(tokens[1] === 'or') {
-    var temp_out = ''
-    temp_out += `${tokens[0]}|`
-    temp_out += evaluateLine(tokens.slice(2))
-    output += enclose(temp_out)
-  }
+  else if(tokens[1] === 'or') output += or(tokens, fromOr)
 
   else if(tokens[1] === 'ifnextis') {
     output += `${tokens[0]}(?=${evaluateLine(tokens.slice(2))})`
@@ -137,6 +132,10 @@ const anyof = (tokens, fromWith) => {
     else if(tokens[i].length === 2 && tokens[i][0] === '\\') {
       output += tokens[i][1]
     }
+    // remove the enclosing : and test if token is a shorthand
+    else if(shorthand_group[tokens[i].slice(1, tokens[i].length - 1)]) {
+      output += shorthand_group[tokens[i].slice(1, tokens[i].length - 1)]
+    }
     else if(tokens[i] === 'with') {
       output += riwith(tokens.slice(i + 1))
       tokens_passed = true
@@ -165,6 +164,19 @@ const anyexcept = (tokens) => {
   output.unshift('[', '^')
   output.push(']')
   return output.join('')
+}
+
+const or = (tokens, fromOr) => {
+  var output = ''
+
+  if(!fromOr) output += '('
+
+  output += `${tokens[0]}|`
+  output += evaluateLine(tokens.slice(2), 1)
+
+  if(tokens.slice(2).length === 1) output += ')'
+
+  return output
 }
 
 /**
@@ -335,10 +347,14 @@ const evaluateVariables = (lines) => {
 }
 
 const replaceCharGroups = (str) => {
+  Object.keys(shorthand_group).forEach(key => {
+    str = str.replaceAll(`(:${key}:)`, `[${shorthand_group[key]}]`)    // remove () if shorthand is enclosed in ()
+    str = str.replaceAll(`:${key}:`, `[${shorthand_group[key]}]`)
+  })
 
-  Object.keys(shorthands).forEach(key => {
-    const re = new RegExp('\\(*:' + key + ':\\)*', 'g')
-    str = str.replace(re, shorthands[key])
+  Object.keys(shorthand_char).forEach(key => {
+    str = str.replaceAll(`(:${key}:)`, `${shorthand_char[key]}`)    // remove () if shorthand is enclosed in ()
+    str = str.replaceAll(`:${key}:`, `${shorthand_char[key]}`)
   })
 
   return str

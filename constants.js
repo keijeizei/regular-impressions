@@ -1,9 +1,12 @@
-const shorthands =  {
-  digit: '[0-9]',
-  lowercase: '[a-z]',
-  uppercase: '[A-Z]',
-  letter: '[a-zA-Z]',
-  alphanumeric: '[a-zA-Z0-9]',
+const shorthand_group =  {
+  digit: '0-9',
+  lowercase: 'a-z',
+  uppercase: 'A-Z',
+  letter: 'a-zA-Z',
+  alphanumeric: 'a-zA-Z0-9',
+}
+
+const shorthand_char = {
   any: '.',
   whitespace: '\\s',
   notwhitespace: '\\S',
@@ -13,7 +16,8 @@ const shorthands =  {
   return: '\\r',
   newline: '\\n',
   boundary: '\\b',
-  notboundary: '\\B'
+  notboundary: '\\B',
+  null: '',
 }
 
 const escapables = [
