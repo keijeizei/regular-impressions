@@ -52,7 +52,7 @@ function convertToRegex(input) {
   var output = ''
 
   lines = escape(input)
-
+  
   lines = evaluateVariables(lines)
 
   lines.forEach((line, i) => {
@@ -60,7 +60,6 @@ function convertToRegex(input) {
     // console.log(tokens)
 
     current_line = i + 1
-
     output += evaluateLine(tokens)
   })
 
@@ -351,7 +350,7 @@ const evaluateVariables = (lines) => {
   })
 
   // remove all empty entries from delete, and remove all empty strings as well
-  lines = lines.filter(line => line != false)
+  lines = lines.filter(line => line != null)
 
   return lines
 }

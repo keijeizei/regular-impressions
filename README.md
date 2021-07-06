@@ -22,15 +22,28 @@ repeat sample 0 to inf				RegEx: (sample)*
 ```
 
 - Match a character from a list of characters using the `anyof` command followed by the characters separated by spaces.
+Shorthand groups can also be used (see section below for shorthands).
 
 ```
 anyof q w e r t y				RegEx: [qwerty]
+anyof :lowercase: :digit: . ,			RegEx: [a-z0-9.,]
 ```
 
 - Match any character not from a list of characters using the `anyexcept` command followed by the characters separated by spaces.
 
 ```
 anyexcept a e i o u				RegEx: [^aeiou]
+```
+
+- Match a range of characters using the `range` command followed by the range of characters.
+```
+range a to d					RegEx: [a-d]
+```
+
+- Multiple `range` and `anyof` can be joined to create a large set of characters using the `with` command.
+```
+range a to d with anyof 1 2 3			RegEx: [a-d123]
+anyof 1 2 3 with range a to d			RegEx: [123a-d]
 ```
 
 - Enter a regular expression using the `regex` command.
@@ -70,7 +83,7 @@ name ifprevis from				RegEx: name(?<=from)
 name ifprevisnot to				RegEx: name(?<!to)
 ```
 
-#### Variables
+### Variables
 Multiple commands can be reused by assigning it to a variable. Variables start with the `variable` command followed by the name of the variable. Succeeding lines are the contents of the variable, and the last line should be `variable`, indicating the end of the declaration.
 ```
 variable gerund
@@ -104,16 +117,16 @@ Shorthands are written inside `:` and are shorthands for some character groups. 
 | `:notboundary:`   | `\B`          |
 
 ## Examples
-Simplified email pattern
+- Simplified email pattern
 ```
 start
-repeat :notwhitespace: 1 to inf
+repeat anyof :alphanumeric: + _ . - 1 to inf
 @
-repeat :notwhitespace: 1 to inf
+repeat anyof :alphanumeric: . - 1 to inf
 end
 ```
 
-Negative, whole, or decimal numbers
+- Negative, whole, or decimal numbers
 ```
 start
 repeat - 0 to 1
@@ -123,15 +136,52 @@ repeat :digit: 1 to inf
 end
 ```
 
-Simplified domain name pattern
+- URL pattern
 ```
 start
 http
 repeat s 0 to 1
 ://
 repeat www. 0 to 1
-repeat :alphanumeric: 1 to 63
+repeat anyof - :alphanumeric: @ : % . _ \ + ~ # = 2 to 256
 .
-repeat :letter: 2 to 6
+repeat :lowercase: 2 to 6
+:boundary:
+repeat anyof - :alphanumeric: @ : % . _ \ + ~ # ( ) ? / = 0 to inf
+end
+```
+
+- Date in the form YYYY/MM/DD from 1900-01-01 to 2099-12-31
+```
+start
+regex (
+19
+or
+20
+regex )
+repeat :digit: 2
+
+/
+
+regex (
+0
+range 1 to 9
+or
+1
+anyof 0 1 2
+regex )
+
+/
+
+regex (
+0
+range 1 to 9
+or
+anyof 1 2
+range 0 to 9
+or
+3
+anyof 0 1
+regex )
 end
 ```
