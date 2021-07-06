@@ -154,34 +154,39 @@ end
 - Date in the form YYYY/MM/DD from 1900-01-01 to 2099-12-31
 ```
 start
-regex (
-19
-or
-20
-regex )
+comment -------YEAR
+19 or 20
 repeat :digit: 2
-
 /
-
+comment -------MONTH
 regex (
+
 0
 range 1 to 9
+
 or
+
 1
 anyof 0 1 2
+
 regex )
-
 /
-
+comment -------DATE
 regex (
+
 0
 range 1 to 9
+
 or
+
 anyof 1 2
 range 0 to 9
+
 or
+
 3
 anyof 0 1
+
 regex )
 end
 ```
