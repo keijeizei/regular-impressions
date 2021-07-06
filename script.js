@@ -5,6 +5,9 @@ inputBox.textContent = ``
 // global variable containing all variables
 var variables = {}
 
+// global variable with the current line
+var current_line = 0
+
 // event listener for auto translate on input change
 document.getElementById('input').addEventListener('keyup', (e) => {
   variables = {}
@@ -35,7 +38,7 @@ const copyToClipboard = () => {
 
 function startTranslation() {
   const outputBox = document.getElementById('output')
-  outputBox.innerText = 'Error'
+  outputBox.innerText = `Syntax error at line ${current_line}`
 
   const input = document.getElementById('input').value
   console.log(input)
@@ -52,9 +55,11 @@ function convertToRegex(input) {
 
   lines = evaluateVariables(lines)
 
-  lines.forEach(line => {
+  lines.forEach((line, i) => {
     const tokens = line.split(' ')
     // console.log(tokens)
+
+    current_line = i + 1
 
     output += evaluateLine(tokens)
   })
@@ -78,6 +83,8 @@ const evaluateLine = (tokens) => {
   else if(tokens[0] === 'anyof') output += anyof(tokens)
 
   else if(tokens[0] === 'comment') output += ''
+
+  else if(tokens[0] === 'range') output += range(tokens)
 
   else if(tokens[0] === 'regex') output += regex(tokens)
 
@@ -142,18 +149,34 @@ const anyexcept = (tokens) => {
   return output.join('')
 }
 
+const range = (tokens) => {
+  const t_len = tokens.length
+  
+  if(t_len < 4) throw Error
+
+  if(tokens[1].length !== 1 || tokens[2] !== 'to' || tokens[3].length !== 1) {
+    throw Error
+  }
+
+  var output = ''
+  output += '['
+  output += `${tokens[1]}-${tokens[3]}`
+  output += ']'
+  return output
+}
+
 const regex = (tokens) => {
   return tokens[1]
 }
 
 const repeat = (tokens) => {
-  var output = ''
   const t_len = tokens.length
-  // console.log(t_len)
+  
+  if(t_len < 5) throw Error
 
-  if(t_len < 5) {
-    throw Error
-  }
+  if(tokens[t_len - 2] !== 'to') throw Error
+
+  var output = ''
 
   // evaluate the string to be repeated
   output += enclose(evaluateLine(tokens.slice(1, t_len - 3)))
