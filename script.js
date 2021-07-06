@@ -80,11 +80,11 @@ const evaluateLine = (tokens) => {
 
   if(tokens[0] === 'anyexcept') output += anyexcept(tokens)
 
-  else if(tokens[0] === 'anyof') output += anyof(tokens)
+  else if(tokens[0] === 'anyof') output += anyof(tokens, 0)
 
   else if(tokens[0] === 'comment') output += ''
 
-  else if(tokens[0] === 'range') output += range(tokens)
+  else if(tokens[0] === 'range') output += range(tokens, 0)
 
   else if(tokens[0] === 'regex') output += regex(tokens)
 
@@ -98,19 +98,19 @@ const evaluateLine = (tokens) => {
   }
 
   else if(tokens[1] === 'ifnextis') {
-    output += `${tokens[0]}(?=${evaluateLine(tokens.slice(2))}))`
+    output += `${tokens[0]}(?=${evaluateLine(tokens.slice(2))})`
   }
 
   else if(tokens[1] === 'ifnextisnot') {
-    output += `${tokens[0]}(?!${evaluateLine(tokens.slice(2))}))`
+    output += `${tokens[0]}(?!${evaluateLine(tokens.slice(2))})`
   }
 
   else if(tokens[1] === 'ifprevis') {
-    output += `${tokens[0]}(?<=${evaluateLine(tokens.slice(2))}))`
+    output += `${tokens[0]}(?<=${evaluateLine(tokens.slice(2))})`
   }
 
   else if(tokens[1] === 'ifprevisnot') {
-    output += `${tokens[0]}(?<!${evaluateLine(tokens.slice(2))}))`
+    output += `${tokens[0]}(?<!${evaluateLine(tokens.slice(2))})`
   }
 
   else {
@@ -123,17 +123,35 @@ const evaluateLine = (tokens) => {
 }
 
 /* ---------------COMMANDS--------------- */
-const anyof = (tokens) => {
+const anyof = (tokens, fromWith) => {
   tokens.shift()
+  tokens_passed = false
 
-  var output = tokens.map(c => {
-    if(c.length === 1 || c.length === 2 && c[0] === '\\') return c
-    throw Error
-  })
+  var output = ''
+  if(!fromWith) output += '['
 
-  output.unshift('[')
-  output.push(']')
-  return output.join('')
+  for(let i = 0; i < tokens.length; i++) {
+    if(tokens[i].length === 1) {
+      output += tokens[i]
+    }
+    else if(tokens[i].length === 2 && tokens[i][0] === '\\') {
+      output += tokens[i][1]
+    }
+    else if(tokens[i] === 'with') {
+      output += riwith(tokens.slice(i + 1))
+      tokens_passed = true
+      break
+    }
+    else {
+      throw Error
+    }
+  }
+
+  // tokens are passed to another function using a 'with' command, statement should not be
+  // closed with a ']' yet
+  if(!tokens_passed) output += ']'
+
+  return output
 }
 
 const anyexcept = (tokens) => {
@@ -149,7 +167,12 @@ const anyexcept = (tokens) => {
   return output.join('')
 }
 
-const range = (tokens) => {
+/**
+ * 
+ * @param {Array} tokens The array of tokens from a line
+ * @param {Boolean} fromWith A value set to true if the function is called through a 'with' command
+ */
+const range = (tokens, fromWith) => {
   const t_len = tokens.length
   
   if(t_len < 4) throw Error
@@ -159,9 +182,14 @@ const range = (tokens) => {
   }
 
   var output = ''
-  output += '['
+  if(!fromWith) output += '['
+
   output += `${tokens[1]}-${tokens[3]}`
-  output += ']'
+
+  // range can be followed by a with keyword
+  if(tokens[4] === 'with') output += riwith(tokens.slice(5))
+  else output += ']'
+
   return output
 }
 
@@ -199,6 +227,13 @@ const repeat = (tokens) => {
     }
   }
   return output
+}
+
+const riwith = (tokens) => {
+  console.log(tokens)
+  if(tokens[0] === 'range') return range(tokens, 1)
+  else if(tokens[0] === 'anyof') return anyof(tokens, 1)
+  throw Error
 }
 
 /**
