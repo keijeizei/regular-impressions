@@ -211,33 +211,43 @@ const regex = (tokens) => {
 
 const repeat = (tokens) => {
   const t_len = tokens.length
-  
-  if(t_len < 5) throw Error
-
-  if(tokens[t_len - 2] !== 'to') throw Error
-
   var output = ''
 
-  // evaluate the string to be repeated
-  output += enclose(evaluateLine(tokens.slice(1, t_len - 3)))
-
-  if(tokens[t_len - 3] === '0' && tokens[t_len - 1] === '1') {
-    output += '?'
-  }
-  else if(tokens[t_len - 1] === 'inf') {
-    if(tokens[t_len - 3] === '0') output += '*'
-    else if(tokens[t_len - 3] === '1') output += '+'
-    else output += `{${tokens[t_len - 3]},}`
-  }
-  else {
-    // check if the range is a number
-    if(!isNaN(tokens[t_len - 3]) && !isNaN(tokens[t_len - 1])) {
-      output += `{${tokens[t_len - 3]},${tokens[t_len - 1]}}`
+  // the end is a range
+  if(tokens[t_len - 2] === 'to') {
+    if(t_len < 5) throw Error
+    // evaluate the string to be repeated
+    output += enclose(evaluateLine(tokens.slice(1, t_len - 3)))
+    
+    if(tokens[t_len - 3] === '0' && tokens[t_len - 1] === '1') {
+      output += '?'
+    }
+    else if(tokens[t_len - 1] === 'inf') {
+      if(tokens[t_len - 3] === '0') output += '*'
+      else if(tokens[t_len - 3] === '1') output += '+'
+      else output += `{${tokens[t_len - 3]},}`
     }
     else {
-      throw Error
+      // check if the range is a number
+      if(!isNaN(tokens[t_len - 3]) && !isNaN(tokens[t_len - 1])) {
+        output += `{${tokens[t_len - 3]},${tokens[t_len - 1]}}`
+      }
+      else {
+        throw Error
+      }
     }
   }
+  // the end is only a number
+  else if(!isNaN(tokens[t_len - 1]) && tokens[t_len - 1] !== '') {
+    if(t_len < 3) throw Error
+
+    // evaluate the string to be repeated
+    output += enclose(evaluateLine(tokens.slice(1, t_len - 1)))
+
+    output += `{${tokens[t_len - 1]}}`
+  }
+  else throw Error
+
   return output
 }
 
