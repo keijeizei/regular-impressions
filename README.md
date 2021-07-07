@@ -60,9 +60,10 @@ range a to d					RegEx: [a-d]
 ```
 range a to d with anyof 1 2 3			RegEx: [a-d123]
 anyof 1 2 3 with range a to d			RegEx: [123a-d]
+range a to z with range A to Z			RegEx: [a-zA-Z]
 ```
 
-- Enter a regular expression using the `regex` command.
+- Enter a regular expression using the `regex` command. This can also be used to escape commands
 ```
 regex repeat\n					RegEx: repeat\n
 ```

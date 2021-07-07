@@ -47,6 +47,9 @@ const copyToClipboard = () => {
   selection.removeAllRanges();
 }
 
+/**
+ * Get the input from the textarea, translate, and display the output.
+ */
 function startTranslation() {
   const outputBox = document.getElementById('output')
   
@@ -59,12 +62,17 @@ function startTranslation() {
   outputBox.innerText = output
 }
 
+/**
+ * Convert the user input to a regular expression.
+ * @param {String} input The input from the user
+ * @returns The translated output
+ */
 function convertToRegex(input) {
   var output = ''
   var current_line
 
   // checks before translation
-  lines = escape(input)
+  lines = escapeAndRemoveTabs(input)
   lines = evaluateVariables(lines)
 
   try {
@@ -85,6 +93,12 @@ function convertToRegex(input) {
   return output
 }
 
+/**
+ * Translates a line of input into a regular expression
+ * @param {Array} tokens The tokens from a line of input
+ * @param {Boolean} fromOr A value set to true if the function is called through an 'or' command
+ * @returns The line of input translated into regular expression
+ */
 const evaluateLine = (tokens, fromOr) => {
   var output = ''
   if(tokens.length === 1) {
@@ -94,19 +108,23 @@ const evaluateLine = (tokens, fromOr) => {
     return tokens[0]
   }
 
-  if(tokens[0] === 'anyexcept') output += anyexcept(tokens, 0)
+  if(tokens.includes('or')) {
+    const or_index = tokens.findIndex((token) => token === 'or')
+    // divide the line where the 'or' is and pass left and right side to or function
+    output += or(tokens.slice(0, or_index), tokens.slice(or_index + 1), fromOr)
+  }
 
-  else if(tokens[0] === 'anyof') output += anyof(tokens, 0)
+  else if(tokens[0] === 'anyexcept') output += any(tokens, false, false)
+
+  else if(tokens[0] === 'anyof') output += any(tokens, true, false)
 
   else if(tokens[0] === 'comment') output += ''
 
-  else if(tokens[0] === 'range') output += range(tokens, 0)
+  else if(tokens[0] === 'range') output += range(tokens, false)
 
   else if(tokens[0] === 'regex') output += regex(tokens)
 
   else if(tokens[0] === 'repeat') output += repeat(tokens)
-
-  else if(tokens[1] === 'or') output += or(tokens, fromOr)
 
   else if(tokens[1] === 'ifnextis') {
     output += `${tokens[0]}(?=${evaluateLine(tokens.slice(2))})`
@@ -134,12 +152,21 @@ const evaluateLine = (tokens, fromOr) => {
 }
 
 /* -----------------------------------COMMANDS----------------------------------- */
-const anyof = (tokens, fromWith) => {
+/**
+ * Evaluate an anyof/anyexcept command
+ * @param {Array} tokens The array of tokens from a line
+ * @param {Boolean} mode A value set to true if command is 'anyof', false if command is 'anyexcept'
+ * @param {Boolean} fromWith A value set to true if the function is called through a 'with' command
+ */
+const any = (tokens, mode, fromWith) => {
   tokens.shift()
   tokens_passed = false
 
   var output = ''
-  if(!fromWith) output += '['
+  if(!fromWith) {
+    output += '['
+    if(!mode) output += '^'
+  }
 
   for(let i = 0; i < tokens.length; i++) {
     if(tokens[i].length === 1) {
@@ -158,73 +185,43 @@ const anyof = (tokens, fromWith) => {
       break
     }
     else if(tokens[i] === '') {
-      throw 'Expected another argument for anyof'
+      throw `Expected another argument for any${mode ? 'of' : 'except'}`
     }
     else {
-      throw 'Invalid anyof argument.'
+      throw `Invalid any${mode ? 'of' : 'except'} argument.`
     }
   }
 
   // tokens are passed to another function using a 'with' command, statement should not be
   // closed with a ']' yet
   if(!tokens_passed) output += ']'
-
-  return output
-}
-
-const anyexcept = (tokens, fromWith) => {
-  tokens.shift()
-  tokens_passed = false
-
-  var output = ''
-  if(!fromWith) output += '[^'
-
-  for(let i = 0; i < tokens.length; i++) {
-    if(tokens[i].length === 1) {
-      output += tokens[i]
-    }
-    else if(tokens[i].length === 2 && tokens[i][0] === '\\') {
-      output += tokens[i][1]
-    }
-    // remove the enclosing : and test if token is a shorthand
-    else if(shorthand_group[tokens[i].slice(1, tokens[i].length - 1)]) {
-      output += shorthand_group[tokens[i].slice(1, tokens[i].length - 1)]
-    }
-    else if(tokens[i] === 'with') {
-      output += riwith(tokens.slice(i + 1))
-      tokens_passed = true
-      break
-    }
-    else if(tokens[i] === '') {
-      throw 'Expected another argument for anyexcept'
-    }
-    else {
-      throw 'Invalid anyexcept argument.'
-    }
-  }
-
-  // tokens are passed to another function using a 'with' command, statement should not be
-  // closed with a ']' yet
-  if(!tokens_passed) output += ']'
-
-  return output
-}
-
-const or = (tokens, fromOr) => {
-  var output = ''
-
-  if(!fromOr) output += '('
-
-  output += `${tokens[0]}|`
-  output += evaluateLine(tokens.slice(2), 1)
-
-  if(tokens.slice(2).length === 1) output += ')'
 
   return output
 }
 
 /**
- * 
+ * Evaluate an or command
+ * @param {Array} left An array of tokens at the left side of the or
+ * @param {Array} right An array of tokens at the right side of the or
+ * @param {Boolean} fromOr A value set to true if the function is called through an 'or' command
+ */
+const or = (left, right, fromOr) => {
+  var output = ''
+
+  if(!fromOr) output += '('
+
+  output += evaluateLine(left, false)
+  output += '|'
+  output += evaluateLine(right, true)
+
+  // close the 'or' statement if it is the last 'or'
+  if(!right.includes('or')) output += ')'
+
+  return output
+}
+
+/**
+ * Evaluate a range command
  * @param {Array} tokens The array of tokens from a line
  * @param {Boolean} fromWith A value set to true if the function is called through a 'with' command
  */
@@ -316,9 +313,9 @@ const repeat = (tokens) => {
 
 const riwith = (tokens) => {
   console.log(tokens)
-  if(tokens[0] === 'range') return range(tokens, 1)
-  else if(tokens[0] === 'anyof') return anyof(tokens, 1)
-  else if(tokens[0] === 'anyexcept') return anyexcept(tokens, 1)
+  if(tokens[0] === 'range') return range(tokens, true)
+  else if(tokens[0] === 'anyof') return anyof(tokens, true)
+  else if(tokens[0] === 'anyexcept') return anyexcept(tokens, true)
   throw 'Invalid command after with.'
 }
 
@@ -342,11 +339,12 @@ const enclose = (str) => {
 }
 
 /**
- * Scans an input string and escape all the characters that are to be escaped
+ * Scans an input string and escape all the characters that are to be escaped and
+ * removes all tabs at the start of a line
  * @param {String} input The input to be scanned
  * @returns An array split into lines with its escapable characters appended with a \
  */
-const escape = (input) => {
+const escapeAndRemoveTabs = (input) => {
   const lines = input.split('\n')
   return lines.map(line => {
     line = line.replace(/^\t+/, '')
@@ -427,6 +425,11 @@ const evaluateVariables = (lines) => {
   return lines
 }
 
+/**
+ * Replace shorthands inside ':' with their regular expression counterparts.
+ * @param {String} str A string of code
+ * @returns A string with shorthands replaced
+ */
 const replaceCharGroups = (str) => {
   Object.keys(shorthand_group).forEach(key => {
     str = str.replaceAll(`(:${key}:)`, `[${shorthand_group[key]}]`)    // remove () if shorthand is enclosed in ()
