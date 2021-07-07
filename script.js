@@ -355,9 +355,6 @@ const evaluateVariables = (lines) => {
     })).join(' ')
   })
 
-  // remove all empty entries from delete, and remove all empty strings as well
-  lines = lines.filter(line => line != null)
-
   return lines
 }
 
