@@ -11,13 +11,15 @@ Demo: https://regular-impressions.netlify.app/
 - Multiple commands are concatenated using line breaks.
 - See next section for list of commands.
 
-## List of commands
+## Commands
 
-- Match repeating patterns using the `repeat` command followed by the pattern and the range of repetition.
+- Match repeating patterns using the `repeat` command followed by the pattern and the number of repetitions or a range of repetition.
+Repeat ranges are written as `l to u` where `l` and `u` are integers indicating the lower and upper bound of the range.
 Use the `inf` keyword to specify an infinite upper bound.
 
 ```
 repeat text 1 to 5				RegEx: (text){1, 5}
+repeat text 5					RegEx: (sample){5}
 repeat sample 0 to inf				RegEx: (sample)*
 ```
 
@@ -82,6 +84,15 @@ name ifnextisnot failed				RegEx: name(?!failed)
 name ifprevis from				RegEx: name(?<=from)
 name ifprevisnot to				RegEx: name(?<!to)
 ```
+Use the `:null:` shorthand to indicate an empty match.
+```
+variable number
+repeat :any: 0 to inf
+:digit:
+variable
+
+:null: ifnextis number				RegEx: (?=.*[0-9])
+```
 
 ### Variables
 Multiple commands can be reused by assigning it to a variable. Variables start with the `variable` command followed by the name of the variable. Succeeding lines are the contents of the variable, and the last line should be `variable`, indicating the end of the declaration.
@@ -94,7 +105,7 @@ variable
 repeat gerund 0 to 1				RegEx evaluates to: ([a-z]+ing)?
 ```
 
-## List of shorthands
+## Shorthands
 
 Shorthands are written inside `:` and are shorthands for some character groups. While most of them takes more time to type than their RegEx counterparts, they are more descriptive and easier to remember.
 
@@ -115,6 +126,7 @@ Shorthands are written inside `:` and are shorthands for some character groups. 
 | `:newline:`       | `\n`          |
 | `:boundary:`      | `\b`          |
 | `:notboundary:`   | `\B`          |
+| `:null:`          |               |
 
 ## Examples
 - Simplified email pattern

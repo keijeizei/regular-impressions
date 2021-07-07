@@ -5,9 +5,6 @@ inputBox.textContent = ``
 // global variable containing all variables
 var variables = {}
 
-// global variable with the current line
-var current_line = 0
-
 // event listener for auto translate on input change
 document.getElementById('input').addEventListener('keyup', (e) => {
   variables = {}
@@ -38,10 +35,10 @@ const copyToClipboard = () => {
 
 function startTranslation() {
   const outputBox = document.getElementById('output')
-  outputBox.innerText = `Syntax error at line ${current_line}`
-
+  
   const input = document.getElementById('input').value
   console.log(input)
+
   output = convertToRegex(input)
   console.log(output)
 
@@ -50,18 +47,24 @@ function startTranslation() {
 
 function convertToRegex(input) {
   var output = ''
+  var current_line
 
   lines = escape(input)
   
   lines = evaluateVariables(lines)
 
-  lines.forEach((line, i) => {
-    const tokens = line.split(' ')
-    // console.log(tokens)
+  try {
+    lines.forEach((line, i) => {
+      const tokens = line.split(' ')
+      // console.log(tokens)
 
-    current_line = i + 1
-    output += evaluateLine(tokens)
-  })
+      current_line = i + 1
+      output += evaluateLine(tokens)
+    })
+  }
+  catch(e) {
+    return `Syntax error at line ${current_line}`
+  }
 
   output = replaceCharGroups(output)
 
@@ -341,7 +344,10 @@ const evaluateVariables = (lines) => {
 
   // replace all occurences of variable names with their regex equivalent
   lines.forEach((line, i) => {
-    const tokens = line.split(' ')
+	  const tokens = line.split(' ')
+
+    // ignore lines starting with 'regex'
+    if(tokens[0] === 'regex') return
 
     lines[i] = (tokens.map((token, j) => {
       if(Object.keys(variables).includes(token)) return variables[token]
