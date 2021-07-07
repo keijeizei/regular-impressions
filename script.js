@@ -266,6 +266,7 @@ const repeat = (tokens) => {
   // the end is a range
   if(tokens[t_len - 2] === 'to') {
     if(t_len < 5) throw 'Too few arguments for repeat.'
+
     // evaluate the string to be repeated
     output += enclose(evaluateLine(tokens.slice(1, t_len - 3)))
     
@@ -280,6 +281,15 @@ const repeat = (tokens) => {
     else {
       // check if the range is a number
       if(!isNaN(tokens[t_len - 3]) && !isNaN(tokens[t_len - 1])) {
+        if(!/^\+?(0|[1-9]\d*)$/.test(tokens[t_len - 1])) 
+          throw 'Lower bound of repeat must be a positive integer.'
+
+        if(!/^\+?(0|[1-9]\d*)$/.test(tokens[t_len - 1]))
+          throw 'Upper bound of repeat must be a positive integer.'
+
+        if(parseInt(tokens[t_len - 3]) >= parseInt(tokens[t_len - 1]))
+          throw 'Upper bound of repeat must be greater that the lower bound.'
+
         output += `{${tokens[t_len - 3]},${tokens[t_len - 1]}}`
       }
       else {
@@ -290,6 +300,9 @@ const repeat = (tokens) => {
   // the end is only a number
   else if(!isNaN(tokens[t_len - 1]) && tokens[t_len - 1] !== '') {
     if(t_len < 3) throw 'Too few arguments for repeat.'
+
+    if(!/^\+?(0|[1-9]\d*)$/.test(tokens[t_len - 1])) 
+      throw 'Repetition quantifier of repeat must be a positive integer.'
 
     // evaluate the string to be repeated
     output += enclose(evaluateLine(tokens.slice(1, t_len - 1)))
