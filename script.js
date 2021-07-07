@@ -94,7 +94,7 @@ const evaluateLine = (tokens, fromOr) => {
     return tokens[0]
   }
 
-  if(tokens[0] === 'anyexcept') output += anyexcept(tokens)
+  if(tokens[0] === 'anyexcept') output += anyexcept(tokens, 0)
 
   else if(tokens[0] === 'anyof') output += anyof(tokens, 0)
 
@@ -172,18 +172,42 @@ const anyof = (tokens, fromWith) => {
   return output
 }
 
-const anyexcept = (tokens) => {
+const anyexcept = (tokens, fromWith) => {
   tokens.shift()
+  tokens_passed = false
 
-  var output = tokens.map(c => {
-    if(c.length === 1 || c.length === 2 && c[0] === '\\') return c
-    if(c === '') throw 'Expected another argument for anyexcept'
-    throw 'Invalid anyexcept argument.'
-  })
+  var output = ''
+  if(!fromWith) output += '[^'
 
-  output.unshift('[', '^')
-  output.push(']')
-  return output.join('')
+  for(let i = 0; i < tokens.length; i++) {
+    if(tokens[i].length === 1) {
+      output += tokens[i]
+    }
+    else if(tokens[i].length === 2 && tokens[i][0] === '\\') {
+      output += tokens[i][1]
+    }
+    // remove the enclosing : and test if token is a shorthand
+    else if(shorthand_group[tokens[i].slice(1, tokens[i].length - 1)]) {
+      output += shorthand_group[tokens[i].slice(1, tokens[i].length - 1)]
+    }
+    else if(tokens[i] === 'with') {
+      output += riwith(tokens.slice(i + 1))
+      tokens_passed = true
+      break
+    }
+    else if(tokens[i] === '') {
+      throw 'Expected another argument for anyexcept'
+    }
+    else {
+      throw 'Invalid anyexcept argument.'
+    }
+  }
+
+  // tokens are passed to another function using a 'with' command, statement should not be
+  // closed with a ']' yet
+  if(!tokens_passed) output += ']'
+
+  return output
 }
 
 const or = (tokens, fromOr) => {
@@ -281,6 +305,7 @@ const riwith = (tokens) => {
   console.log(tokens)
   if(tokens[0] === 'range') return range(tokens, 1)
   else if(tokens[0] === 'anyof') return anyof(tokens, 1)
+  else if(tokens[0] === 'anyexcept') return anyexcept(tokens, 1)
   throw 'Invalid command after with.'
 }
 
