@@ -76,7 +76,7 @@ function convertToRegex(input) {
     })
   }
   catch(e) {
-    return `Syntax error at line ${current_line}`
+    return `Syntax error at line ${current_line}: ${e}`
   }
 
   output = replaceCharGroups(output)
@@ -156,8 +156,11 @@ const anyof = (tokens, fromWith) => {
       tokens_passed = true
       break
     }
+    else if(tokens[i] === '') {
+      throw 'Expected another argument for anyof'
+    }
     else {
-      throw Error
+      throw 'Invalid anyof argument.'
     }
   }
 
@@ -173,7 +176,8 @@ const anyexcept = (tokens) => {
 
   var output = tokens.map(c => {
     if(c.length === 1 || c.length === 2 && c[0] === '\\') return c
-    throw Error
+    if(c === '') throw 'Expected another argument for anyexcept'
+    throw 'Invalid anyexcept argument.'
   })
 
   output.unshift('[', '^')
@@ -202,11 +206,13 @@ const or = (tokens, fromOr) => {
 const range = (tokens, fromWith) => {
   const t_len = tokens.length
   
-  if(t_len < 4) throw Error
+  if(t_len < 4) throw 'Too few arguments for range.'
 
   if(tokens[1].length !== 1 || tokens[2] !== 'to' || tokens[3].length !== 1) {
-    throw Error
+    throw 'Invalid range format.'
   }
+
+  if(tokens[t_len - 1] === '') throw 'Expected another argument for range'
 
   var output = ''
   if(!fromWith) output += '['
@@ -221,16 +227,20 @@ const range = (tokens, fromWith) => {
 }
 
 const regex = (tokens) => {
+  if(tokens[1] === '') throw 'Expected another argument for regex'
   return tokens[1]
 }
 
 const repeat = (tokens) => {
   const t_len = tokens.length
+
+  if(tokens[t_len - 1] === '') throw 'Expected another argument for repeat'
+
   var output = ''
 
   // the end is a range
   if(tokens[t_len - 2] === 'to') {
-    if(t_len < 5) throw Error
+    if(t_len < 5) throw 'Too few arguments for repeat.'
     // evaluate the string to be repeated
     output += enclose(evaluateLine(tokens.slice(1, t_len - 3)))
     
@@ -248,20 +258,20 @@ const repeat = (tokens) => {
         output += `{${tokens[t_len - 3]},${tokens[t_len - 1]}}`
       }
       else {
-        throw Error
+        throw 'Range is not a valid number.'
       }
     }
   }
   // the end is only a number
   else if(!isNaN(tokens[t_len - 1]) && tokens[t_len - 1] !== '') {
-    if(t_len < 3) throw Error
+    if(t_len < 3) throw 'Too few arguments for repeat.'
 
     // evaluate the string to be repeated
     output += enclose(evaluateLine(tokens.slice(1, t_len - 1)))
 
     output += `{${tokens[t_len - 1]}}`
   }
-  else throw Error
+  else throw 'Invalid repeat statement.'
 
   return output
 }
@@ -270,20 +280,23 @@ const riwith = (tokens) => {
   console.log(tokens)
   if(tokens[0] === 'range') return range(tokens, 1)
   else if(tokens[0] === 'anyof') return anyof(tokens, 1)
-  throw Error
+  throw 'Invalid command after with.'
 }
 
 /* -----------------------------TRANSLATION FUNCTIONS---------------------------- */
 
 /**
  * Encloses a given string inside parenthesis if the length is greater than 1
+ * and the string is not yet enclosed.
  * @param {String} str String to be enclosed
  * @returns The potentially enclosed string
  */
 const enclose = (str) => {
   if(str.length > 1) {
     // don't enclose if string is already enclosed
-    if(str[0] === '(' && str[str.length - 1] === ')' || str[0] === '[' && str[str.length - 1] === ']') return str
+    if(str[0] === '(' && str[str.length - 1] === ')' || str[0] === '[' && str[str.length - 1] === ']') {
+      return str
+    }
     return `(${str})`
   }
   return str
@@ -304,8 +317,6 @@ const escape = (input) => {
     return (line.split(' ').map(c => escapables.includes(c) ? `\\${c}` : c)).join(' ')
   })
 }
-
-const removeTabs = (input) => input.replace(/^\t+/, '')
 
 /**
  * Evaluate all the variables, save them in the 'variables' global variable,
@@ -345,7 +356,7 @@ const evaluateVariables = (lines) => {
       // variable start
       else {
         // reserved keyword variable names are not allowed
-        if(reserved.includes(tokens[1])) throw Error
+        if(reserved.includes(tokens[1])) throw 'Variable name is a reserved keyword.'
         
         // create a new empty key in variables
         variables[tokens[1]] = ''
