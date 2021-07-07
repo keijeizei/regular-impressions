@@ -3,6 +3,7 @@
 A simple tool for writing regular expressions using a pseudocode-like language.
 
 Demo: https://regular-impressions.netlify.app/
+
 Examples: [Examples](#examples)
 
 ## Table of Contents
