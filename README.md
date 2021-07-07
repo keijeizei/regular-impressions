@@ -1,14 +1,26 @@
 # Regular Impressions
 
-A simple tool for writing regular expressions using pseudocode-like text. This project is under development.
+A simple tool for writing regular expressions using a pseudocode-like language.
 
 Demo: https://regular-impressions.netlify.app/
+
+# Table of Contents
+
+<!--ts-->
+   * [Table of contents](#table-of-contents)
+   * [How to use](#how-to-use)
+   * [Commands](#commands)
+      * [Variables](#variables)
+   * [Shorthands](#shorthands)
+   * [Examples](#examples)
+<!--te-->
 
 ## How to use
 
 - Commands should strictly be written one command per line unless the commands are nested.
 - Symbols and punctuations DO NOT need to be escaped.
 - Multiple commands are concatenated using line breaks.
+- Tabs can be used to indent for readability.
 - See next section for list of commands.
 
 ## Commands

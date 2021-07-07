@@ -11,6 +11,19 @@ document.getElementById('input').addEventListener('keyup', (e) => {
   startTranslation()
 })
 
+// event listener to insert a \t when pressing tab
+document.getElementById('input').addEventListener('keydown', function(e) {
+  if (e.key == 'Tab') {
+    e.preventDefault()
+    var start = this.selectionStart
+    var end = this.selectionEnd
+
+    this.value = this.value.substring(0, start) + "\t" + this.value.substring(end)
+
+    this.selectionStart = this.selectionEnd = start + 1
+  }
+})
+
 const copyToClipboard = () => {
   var elm = document.getElementById("output");
   
@@ -49,8 +62,8 @@ function convertToRegex(input) {
   var output = ''
   var current_line
 
+  // checks before translation
   lines = escape(input)
-  
   lines = evaluateVariables(lines)
 
   try {
@@ -119,7 +132,7 @@ const evaluateLine = (tokens, fromOr) => {
   return output
 }
 
-/* ---------------COMMANDS--------------- */
+/* -----------------------------------COMMANDS----------------------------------- */
 const anyof = (tokens, fromWith) => {
   tokens.shift()
   tokens_passed = false
@@ -260,6 +273,8 @@ const riwith = (tokens) => {
   throw Error
 }
 
+/* -----------------------------TRANSLATION FUNCTIONS---------------------------- */
+
 /**
  * Encloses a given string inside parenthesis if the length is greater than 1
  * @param {String} str String to be enclosed
@@ -282,11 +297,15 @@ const enclose = (str) => {
 const escape = (input) => {
   const lines = input.split('\n')
   return lines.map(line => {
+    line = line.replace(/^\t+/, '')
+
     // ignore lines starting with 'regex'
     if(line.match(/^regex/)) return line
     return (line.split(' ').map(c => escapables.includes(c) ? `\\${c}` : c)).join(' ')
   })
 }
+
+const removeTabs = (input) => input.replace(/^\t+/, '')
 
 /**
  * Evaluate all the variables, save them in the 'variables' global variable,
