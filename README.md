@@ -4,7 +4,7 @@ A simple tool for writing regular expressions using a pseudocode-like language.
 
 Demo: https://regular-impressions.netlify.app/
 
-# Table of Contents
+## Table of Contents
 
 <!--ts-->
    * [Table of contents](#table-of-contents)
@@ -179,38 +179,34 @@ end
 ```
 start
 comment -------YEAR
-19 or 20
-repeat :digit: 2
-/
+	19 or 20
+	repeat :digit: 2
+	/
 comment -------MONTH
-regex (
+	regex (
+		0
+		range 1 to 9
 
-0
-range 1 to 9
+		or
 
-or
-
-1
-anyof 0 1 2
-
-regex )
-/
+		1
+		anyof 0 1 2
+	regex )
+	/
 comment -------DATE
-regex (
+	regex (
+		0
+		range 1 to 9
 
-0
-range 1 to 9
+		or
 
-or
+		anyof 1 2
+		range 0 to 9
 
-anyof 1 2
-range 0 to 9
+		or
 
-or
-
-3
-anyof 0 1
-
-regex )
+		3
+		anyof 0 1
+	regex )
 end
 ```
