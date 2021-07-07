@@ -8,7 +8,14 @@
 </head>
 <body>
   <div class="container">
-    <textarea id="input" placeholder="Write here..." autofocus></textarea>
+    <textarea
+      id="input"
+      placeholder="Write here..."
+      spellcheck="false"
+      autofocus
+    >
+    </textarea>
+    <p class="label">Regular Expression:</p>
     <div class="outputcontainer">
       <div id="output"></div>
       <button class="copybutton" onclick="copyToClipboard()">Copy</button>

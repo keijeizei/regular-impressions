@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0;
+  background-color: #0d1117;
 }
 
 .container {
@@ -8,6 +9,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 2em;
+  color: white;
 }
 
 #input {
@@ -15,19 +17,35 @@ body {
   height: 20em;
   padding: 1em;
   resize: vertical;
+  border-radius: 1rem;
+  color: white;
+  background-color: #161b22;
+}
+
+#input:focus {
+  outline: #888;
+}
+
+.label {
+  margin-top: 1em;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 1.5rem;
 }
 
 .outputcontainer {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   width: 96%;
-  margin: 2rem 0;
   padding: 2rem 1rem;
-  border: 1px solid gray;
+  border: 1px solid #222;
   border-radius: 1rem;
+
   font-family: monospace;
   font-size: 1.5em;
+  background-color: #161b22;
 }
 
 #output {
@@ -38,4 +56,25 @@ body {
 .copybutton {
   width: 50px;
   height: 50px;
+  border: 0;
+  border-radius: 10px;
+  background-color: #888;
+}
+
+.copybutton:hover {
+  background-color: #aaa;
+}
+
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #ccc;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #ccc;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #ccc;
 }

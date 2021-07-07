@@ -44,6 +44,7 @@ const copyToClipboard = () => {
   }
 
   document.execCommand("Copy");
+  selection.removeAllRanges();
 }
 
 function startTranslation() {
