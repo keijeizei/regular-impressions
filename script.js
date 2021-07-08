@@ -108,8 +108,28 @@ const evaluateLine = (tokens, fromOr) => {
     return tokens[0]
   }
 
-  if(tokens.includes('or')) {
-    const or_index = tokens.findIndex((token) => token === 'or')
+  if(tokens.includes('ifnextis')) {
+    const command_index = tokens.findIndex(token => token === 'ifnextis')
+    output += look(tokens.slice(0, command_index), tokens.slice(command_index + 1), 'ifnextis')
+  }
+
+  else if(tokens.includes('ifnextisnot')) {
+    const command_index = tokens.findIndex(token => token === 'ifnextisnot')
+    output += look(tokens.slice(0, command_index), tokens.slice(command_index + 1), 'ifnextisnot')
+  }
+
+  else if(tokens.includes('ifprevis')) {
+    const command_index = tokens.findIndex(token => token === 'ifprevis')
+    output += look(tokens.slice(0, command_index), tokens.slice(command_index + 1), 'ifprevis')
+  }
+
+  else if(tokens.includes('ifprevisnot')) {
+    const command_index = tokens.findIndex(token => token === 'ifprevisnot')
+    output += look(tokens.slice(0, command_index), tokens.slice(command_index + 1), 'ifprevisnot')
+  }
+
+  else if(tokens.includes('or')) {
+    const or_index = tokens.findIndex(token => token === 'or')
     // divide the line where the 'or' is and pass left and right side to or function
     output += or(tokens.slice(0, or_index), tokens.slice(or_index + 1), fromOr)
   }
@@ -125,22 +145,6 @@ const evaluateLine = (tokens, fromOr) => {
   else if(tokens[0] === 'regex') output += regex(tokens)
 
   else if(tokens[0] === 'repeat') output += repeat(tokens)
-
-  else if(tokens[1] === 'ifnextis') {
-    output += `${tokens[0]}(?=${evaluateLine(tokens.slice(2))})`
-  }
-
-  else if(tokens[1] === 'ifnextisnot') {
-    output += `${tokens[0]}(?!${evaluateLine(tokens.slice(2))})`
-  }
-
-  else if(tokens[1] === 'ifprevis') {
-    output += `${tokens[0]}(?<=${evaluateLine(tokens.slice(2))})`
-  }
-
-  else if(tokens[1] === 'ifprevisnot') {
-    output += `${tokens[0]}(?<!${evaluateLine(tokens.slice(2))})`
-  }
 
   else {
     tokens.forEach(token => {
@@ -196,6 +200,28 @@ const any = (tokens, mode, fromWith) => {
   // closed with a ']' yet
   if(!tokens_passed) output += ']'
 
+  return output
+}
+
+const look = (left, right, command) => {
+  var output = ''
+  output += evaluateLine(left)
+  switch(command) {
+    case 'ifnextis':
+      output += '(?='
+      break
+    case 'ifnextisnot':
+      output += '(?!'
+      break
+    case 'ifprevis':
+      output += '(?<='
+      break
+    case 'ifprevisnot':
+      output += '(?<!'
+      break
+  }
+  output += evaluateLine(right)
+  output += ')'
   return output
 }
 
