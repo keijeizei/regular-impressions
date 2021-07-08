@@ -39,6 +39,7 @@ const escapables = [
 ]
 
 const reserved = [
+  'and',
   'anyexcept',
   'anyof',
   'comment',

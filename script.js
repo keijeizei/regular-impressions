@@ -127,6 +127,11 @@ const evaluateLine = (tokens, fromOr) => {
     const command_index = tokens.findIndex(token => token === 'ifprevisnot')
     output += look(tokens.slice(0, command_index), tokens.slice(command_index + 1), 'ifprevisnot')
   }
+  
+  else if(tokens.includes('and')) {
+    const and_index = tokens.findIndex(token => token === 'and')
+    output += evaluateLine(tokens.slice(0, and_index)) + evaluateLine(tokens.slice(and_index + 1))
+  }
 
   else if(tokens.includes('or')) {
     const or_index = tokens.findIndex(token => token === 'or')
@@ -203,9 +208,15 @@ const any = (tokens, mode, fromWith) => {
   return output
 }
 
+/**
+ * Evaluates look assertions commands.
+ * This includes ifnextis, ifnextisnot, ifprevis, and ifprevisnot.
+ * @param {Array} left An array of tokens at the left side of the look
+ * @param {Array} right An array of tokens at the right side of the look
+ * @param {String} command A string indicating the look assertion command
+ */
 const look = (left, right, command) => {
-  var output = ''
-  output += evaluateLine(left)
+  var output = evaluateLine(left)
   switch(command) {
     case 'ifnextis':
       output += '(?='
@@ -340,8 +351,7 @@ const repeat = (tokens) => {
 const riwith = (tokens) => {
   console.log(tokens)
   if(tokens[0] === 'range') return range(tokens, true)
-  else if(tokens[0] === 'anyof') return anyof(tokens, true)
-  else if(tokens[0] === 'anyexcept') return anyexcept(tokens, true)
+  else if(tokens[0] === 'anyof') return any(tokens, true, true)
   throw 'Invalid command after with.'
 }
 

@@ -19,7 +19,7 @@ Examples: [Examples](#examples)
 
 ## How to use
 
-- Commands should strictly be written one command per line unless the commands are nested.
+- Commands are recommended to be written one command per line unless the commands are nested.
 - Symbols and punctuations DO NOT need to be escaped.
 - Multiple commands are concatenated using line breaks.
 - Tabs can be used to indent for readability.
@@ -99,14 +99,11 @@ name ifnextisnot failed				RegEx: name(?!failed)
 name ifprevis from				RegEx: name(?<=from)
 name ifprevisnot to				RegEx: name(?<!to)
 ```
-Use the `:null:` shorthand to indicate an empty match.
-```
-variable number
-repeat :any: 0 to inf
-:digit:
-variable
+Use the `:null:` shorthand to indicate an empty match for either of the look assertion arguments.
 
-:null: ifnextis number				RegEx: (?=.*[0-9])
+- Concatenation is recommended to be done by using line breaks for readability. However, in-line concatenation is still possible by typing `and` between two commands. This can be used to concatenate commands inside a look assertion.
+```
+:null: ifnextis repeat :any: 0 to inf and :digit:	RegEx: (?=.*[0-9])
 ```
 
 ### Variables
@@ -175,6 +172,17 @@ repeat anyof - :alphanumeric: @ : % . _ \ + ~ # = 2 to 256
 repeat :lowercase: 2 to 6
 :boundary:
 repeat anyof - :alphanumeric: @ : % . _ \ + ~ # ( ) ? / = 0 to inf
+end
+```
+
+- Password with 1 lowercase letter, 1 uppercase letter, 1 number, and contains at least 8 characters
+```
+:null: ifnextis repeat :any: 0 to inf and :digit:
+:null: ifnextis repeat :any: 0 to inf and :alphanumeric:
+:null: ifnextis repeat :any: 0 to inf and :uppercase:
+:null: ifnextis repeat :any: 0 to inf and :lowercase:
+start
+repeat :any: 8 to inf
 end
 ```
 
