@@ -27,8 +27,8 @@ body {
 } */
 
 .CodeMirror {
-  width: 96%;
-  height: 50vh;
+  width: 98%;
+  height: 50vh !important;
   font-size: 1rem;
 }
 

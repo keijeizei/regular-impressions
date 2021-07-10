@@ -22,14 +22,10 @@ CodeMirror.defineMode("regularimpressions", function() {
 
   var keywords = words([
                   "anyof", "anyexcept", "ifnextis", "ifnextisnot",
-                  "ifprevis", "ifprevisnot", "end", "range",  "regex",
+                  "ifprevis", "ifprevisnot", "end", "range", "regex",
                   "repeat", "start", "variable"]);
 
   var builtins = words(["and", "or", "to", "with"]);
-
-  var dataTypes =  words(["and"]);
-
-  var isOperatorChar = /[+\-*&=<>\/\:]/;
 
   function tokenBase(stream, state) {
 
@@ -47,25 +43,23 @@ CodeMirror.defineMode("regularimpressions", function() {
     }
 
     var ch = stream.next();
-    if (/[\[\]\(\),]/.test(ch)) {
+    if (/[\[\]\(\),\{\}]/.test(ch)) {
       return null;
-    }
+	  }
+
     if (/\d/.test(ch)) {
       stream.eatWhile(/[\w\.]/);
       return "number";
     }
-    if (isOperatorChar.test(ch)) {
-      stream.eatWhile(isOperatorChar);
-      return "operator";
-    }
+
     stream.eatWhile(/[\w\$_]/);
     var word = stream.current().toLowerCase();
 
     if (keywords.hasOwnProperty(word)){
-            return 'keyword';
+      return 'keyword';
     }
-    if (builtins.hasOwnProperty(word) || dataTypes.hasOwnProperty(word)) {
-            return 'builtin';
+    if (builtins.hasOwnProperty(word)) {
+      return 'builtin';
     }
     return "variable";
   }
