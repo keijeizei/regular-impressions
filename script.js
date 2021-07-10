@@ -383,11 +383,16 @@ const enclose = (str) => {
 const escapeAndRemoveTabs = (input) => {
   const lines = input.split('\n')
   return lines.map(line => {
-    line = line.replace(/^\t+/, '')
+    line = line.replace(/^\s+/, '')
 
     // ignore lines starting with 'regex'
     if(line.match(/^regex/)) return line
-    return (line.split(' ').map(c => escapables.includes(c) ? `\\${c}` : c)).join(' ')
+    
+    return line.split(' ').map(token => 
+      token.split('').map(c => 
+        escapables.includes(c) ? `\\${c}` : c
+      ).join('')
+    ).join(' ')
   })
 }
 
