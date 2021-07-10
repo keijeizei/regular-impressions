@@ -5,14 +5,16 @@ inputBox.textContent = ``
 // global variable containing all variables
 var variables = {}
 
+// OLD CODE without codemirror
+/*
 // event listener for auto translate on input change
-document.getElementById('input').addEventListener('keyup', (e) => {
+document.getElementById('input').addEventListener('keyup', e => {
   variables = {}
   startTranslation()
 })
 
 // event listener to insert a \t when pressing tab
-document.getElementById('input').addEventListener('keydown', function(e) {
+document.getElementById('input').addEventListener('keydown', e => {
   if (e.key == 'Tab') {
     e.preventDefault()
     var start = this.selectionStart
@@ -22,6 +24,14 @@ document.getElementById('input').addEventListener('keydown', function(e) {
 
     this.selectionStart = this.selectionEnd = start + 1
   }
+})
+*/
+
+// codemirror's event listener for input change
+editor.on('change', editor => {
+  variables = {}
+  var input = editor.doc.getValue()
+  startTranslation(input)
 })
 
 const copyToClipboard = () => {
@@ -50,15 +60,19 @@ const copyToClipboard = () => {
 /**
  * Get the input from the textarea, translate, and display the output.
  */
-function startTranslation() {
+function startTranslation(input) {
   const outputBox = document.getElementById('output')
+ 
+  output = convertToRegex(input || '')
   
+  // OLD CODE without codemirror
+  /*
   const input = document.getElementById('input').value
-  console.log(input)
-
   output = convertToRegex(input)
-  console.log(output)
+  */
 
+  // console.log(input)
+  // console.log(output)
   outputBox.innerText = output
 }
 

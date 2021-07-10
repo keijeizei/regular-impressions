@@ -26,6 +26,12 @@ body {
   tab-size: 4;
 }
 
+.CodeMirror {
+  width: 96%;
+  height: 50vh;
+  font-size: 1rem;
+}
+
 #input:focus {
   outline: #888;
 }
