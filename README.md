@@ -22,7 +22,7 @@ Examples: [Examples](#examples)
 - Commands are recommended to be written one command per line unless the commands are nested.
 - Symbols and punctuations DO NOT need to be escaped.
 - Multiple commands are concatenated using line breaks.
-- Tabs can be used to indent for readability.
+- Tabs and spaces can be used to indent for readability.
 
 ## Commands
 #### `repeat`
@@ -191,34 +191,34 @@ end
 ```
 start
 comment -------YEAR
-	19 or 20
-	repeat :digit: 2
-	/
+    19 or 20
+    repeat :digit: 2
+    /
 comment -------MONTH
-	regex (
-		0
-		range 1 to 9
+    regex (
+        0
+        range 1 to 9
 
-		or
+        or
 
-		1
-		anyof 0 1 2
-	regex )
-	/
+        1
+        anyof 0 1 2
+    regex )
+  /
 comment -------DATE
-	regex (
-		0
-		range 1 to 9
+    regex (
+        0
+        range 1 to 9
 
-		or
+        or
 
-		anyof 1 2
-		range 0 to 9
+        anyof 1 2
+        range 0 to 9
 
-		or
+        or
 
-		3
-		anyof 0 1
-	regex )
+        3
+        anyof 0 1
+    regex )
 end
 ```

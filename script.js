@@ -388,7 +388,8 @@ const escapeAndRemoveTabs = (input) => {
     // ignore lines starting with 'regex'
     if(line.match(/^regex/)) return line
     
-    return line.split(' ').map(token => 
+    // escape all escapable characters and change their spacing to 1 space
+    return line.split(/\s+/).map(token => 
       token.split('').map(c => 
         escapables.includes(c) ? `\\${c}` : c
       ).join('')
