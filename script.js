@@ -35,26 +35,33 @@ editor.on('change', editor => {
 })
 
 const copyToClipboard = () => {
-  var elm = document.getElementById("output");
+  var elm = document.getElementById("output")
   
   // for Internet Explorer
   if(document.body.createTextRange) {
-    var range = document.body.createTextRange();
-    range.moveToElementText(elm);
-    range.select();
+    var range = document.body.createTextRange()
+    range.moveToElementText(elm)
+    range.select()
   }
 
   // other browsers
   else if(window.getSelection) {
-    var selection = window.getSelection();
-    var range = document.createRange();
-    range.selectNodeContents(elm);
-    selection.removeAllRanges();
-    selection.addRange(range);
+    var selection = window.getSelection()
+    var range = document.createRange()
+    range.selectNodeContents(elm)
+    selection.removeAllRanges()
+    selection.addRange(range)
   }
 
-  document.execCommand("Copy");
-  selection.removeAllRanges();
+  document.execCommand("Copy")
+  selection.removeAllRanges()
+
+  // show snackbar for 3 seconds when copy button is clicked
+  var x = document.getElementById("snackbar")
+  x.className = "show"
+  setTimeout(() => {
+    x.className = x.className.replace("show", "")
+  }, 3000);
 }
 
 /**
