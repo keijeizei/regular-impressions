@@ -86,8 +86,13 @@ function convertToRegex(input) {
   var current_line
 
   // checks before translation
-  lines = escapeAndRemoveTabs(input)
-  lines = evaluateVariables(lines)
+  try {
+    lines = escapeAndRemoveTabs(input)
+    lines = evaluateVariables(lines)
+  }
+  catch(e) {
+    return `Syntax error: ${e}`
+  }
 
   try {
     lines.forEach((line, i) => {
@@ -451,6 +456,8 @@ const evaluateVariables = (lines) => {
         // reserved keyword variable names are not allowed
         if(reserved.includes(tokens[1])) throw 'Variable name is a reserved keyword.'
         
+        if(tokens[1] === '') throw 'Expected variable name.'
+        
         // create a new empty key in variables
         variables[tokens[1]] = ''
         variable_name = tokens[1]                       // save variable name
@@ -477,6 +484,8 @@ const evaluateVariables = (lines) => {
       return token
     })).join(' ')
   })
+
+  if(isVariable) throw `Variable ${variable_name} is unterminated.`
 
   return lines
 }

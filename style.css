@@ -12,7 +12,7 @@ body {
   color: white;
 }
 
-#input {
+/* #input {
   width: 96%;
   height: 50vh;
   padding: 1em;
@@ -24,7 +24,7 @@ body {
   -moz-tab-size: 4;
   -o-tab-size: 4;
   tab-size: 4;
-}
+} */
 
 .CodeMirror {
   width: 96%;
@@ -76,15 +76,15 @@ body {
 }
 
 
-::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+/* ::placeholder {
   color: #ccc;
-  opacity: 1; /* Firefox */
+  opacity: 1;
 }
 
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
+:-ms-input-placeholder {
   color: #ccc;
 }
 
-::-ms-input-placeholder { /* Microsoft Edge */
+::-ms-input-placeholder {
   color: #ccc;
-}
+} */
