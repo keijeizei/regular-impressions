@@ -23,7 +23,7 @@ CodeMirror.defineMode("regularimpressions", function() {
   var keywords = words([
                   "anyof", "anyexcept", "ifnextis", "ifnextisnot",
                   "ifprevis", "ifprevisnot", "end", "range", "regex",
-                  "repeat", "start", "variable"]);
+                  "repeat", "repeatlazy", "start", "variable"]);
 
   var builtins = words(["and", "or", "to", "with"]);
 
@@ -45,7 +45,7 @@ CodeMirror.defineMode("regularimpressions", function() {
     var ch = stream.next();
     if (/[\[\]\(\),\{\}]/.test(ch)) {
       return null;
-	  }
+    }
 
     if (/\d/.test(ch)) {
       stream.eatWhile(/[\w\.]/);

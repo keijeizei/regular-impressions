@@ -175,7 +175,9 @@ const evaluateLine = (tokens, fromOr) => {
 
   else if(tokens[0] === 'regex') output += regex(tokens)
 
-  else if(tokens[0] === 'repeat') output += repeat(tokens)
+  else if(tokens[0] === 'repeat') output += repeat(tokens, false)
+
+  else if(tokens[0] === 'repeatlazy') output += repeat(tokens, true)
 
   else {
     tokens.forEach(token => {
@@ -316,7 +318,7 @@ const regex = (tokens) => {
   return tokens[1]
 }
 
-const repeat = (tokens) => {
+const repeat = (tokens, isLazy) => {
   const t_len = tokens.length
 
   if(tokens[t_len - 1] === '') throw 'Expected another argument for repeat'
@@ -370,6 +372,8 @@ const repeat = (tokens) => {
     output += `{${tokens[t_len - 1]}}`
   }
   else throw 'Invalid repeat statement.'
+
+  if(isLazy) output += '?'
 
   return output
 }
@@ -481,7 +485,7 @@ const evaluateVariables = (lines) => {
 
   // replace all occurences of variable names with their regex equivalent
   lines.forEach((line, i) => {
-	  const tokens = line.split(' ')
+    const tokens = line.split(' ')
 
     // ignore lines starting with 'regex'
     if(tokens[0] === 'regex') return

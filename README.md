@@ -35,6 +35,13 @@ repeat text 1 to 5				RegEx: (text){1, 5}
 repeat text 5					RegEx: (sample){5}
 repeat sample 0 to inf				RegEx: (sample)*
 ```
+#### `repeatlazy`
+- Normal `repeat` command is greedy like its regular expression counterpart. Use the `repeatlazy` command to do a lazy repeat (matching the shortest string). This adds a `?` to the end of the regular expression.
+```
+<						RegEx: <.*?>
+repeatlazy :any: 0 to inf
+>
+```
 #### `anyof`
 - Match a character from a list of characters using the `anyof` command followed by the characters separated by spaces.
 Shorthand groups can also be used (see [shorthands](#shorthands)).
@@ -72,7 +79,7 @@ regex repeat\n					RegEx: repeat\n
 comment The line below means one or more 'a'
 repeat a 1 to inf
 ```
-#### `start` and `end`
+#### `start`, `end`
 - Match the start of a line using the `start` command and the end of the line using the `end` command.
 ```
 start						RegEx: ^(text){2,}$
