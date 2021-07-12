@@ -27,7 +27,7 @@ Examples: [Examples](#examples)
 ## Commands
 #### `repeat`
 - Match repeating patterns using the `repeat` command followed by the pattern and the number of repetitions or a range of repetition.
-Repeat ranges are written as `l to u` where `l` and `u` are integers indicating the lower and upper bound of the range.
+- Repeat ranges are written as `l to u` where `l` and `u` are integers indicating the lower and upper bound of the range.
 - Use the `inf` keyword to specify an infinite upper bound.
 
 ```
@@ -211,7 +211,7 @@ comment -------MONTH
         1
         anyof 0 1 2
     regex )
-  /
+    /
 comment -------DATE
     regex (
         0
