@@ -1,34 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <link rel="stylesheet" href="style.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css" rel="stylesheet"/>
-  <link href="codemirror/theme/monokai.css" rel="stylesheet"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
-  <script src="codemirror/mode/regularimpressions/regularimpressions.js"></script>
-  <title>Regular Impressions</title>
-</head>
-<body>
-  <div class="container">
-    <textarea
-      id="input"
-      placeholder="Write here..."
-      spellcheck="false"
-      autofocus
-    ></textarea>
-    <p class="label">Regular Expression:</p>
-    <div class="outputcontainer">
-      <div id="output"></div>
-      <button class="copybutton" onclick="copyToClipboard()">Copy</button>
+    <meta
+      name="description"
+      content="Write regular expressions using a language similar to pseudocode. Regular Expressions is a simple tool for writing regular expressions using a pseudocode-like language."
+    />
+    <meta name="keywords" content="regular expressions, regex, regexp" />
+    <meta
+      name="google-site-verification"
+      content="bzMdvjZAE0gOnqWirHlidP0DvW2Sxa7qx9BMGzkD7rg"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css"
+      rel="stylesheet"
+    />
+    <link href="codemirror/theme/monokai.css" rel="stylesheet" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
+    <script src="codemirror/mode/regularimpressions/regularimpressions.js"></script>
+    <title>Regular Impressions</title>
+  </head>
+  <body>
+    <div class="container">
+      <textarea
+        id="input"
+        placeholder="Write here..."
+        spellcheck="false"
+        autofocus
+      ></textarea>
+      <p class="label">Regular Expression:</p>
+      <div class="outputcontainer">
+        <div id="output"></div>
+        <button class="copybutton" onclick="copyToClipboard()">Copy</button>
+      </div>
     </div>
-  </div>
-  <div id="snackbar">Copied!</div>
-</body>
-<script src="codemirrorinvoker.js"></script>
-<script src="constants.js"></script>
-<script src="script.js"></script>
+    <div id="snackbar">Copied!</div>
+  </body>
+  <script src="codemirrorinvoker.js"></script>
+  <script src="constants.js"></script>
+  <script src="script.js"></script>
 </html>
