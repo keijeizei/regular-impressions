@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png" />
+
     <meta
       name="description"
       content="Write regular expressions using a language similar to pseudocode. Regular Expressions is a simple tool for writing regular expressions using a pseudocode-like language."
@@ -27,6 +29,30 @@
   </head>
   <body>
     <div class="container">
+      <div class="nav">
+        <div class="title">
+          <img
+            src="assets/logo.png"
+            alt="Regular Impressions Logo"
+            width="48"
+          />
+          <h1>Regular Impressions</h1>
+        </div>
+        <div class="navbuttons">
+          <button
+            class="navbutton"
+            onclick="window.open('https://github.com/keijeizei/regular-impressions#readme')"
+          >
+            How to Use
+          </button>
+          <button class="navbutton" onclick="toggleModal('examples')">
+            Examples
+          </button>
+          <button class="navbutton" onclick="toggleModal('about')">
+            About
+          </button>
+        </div>
+      </div>
       <textarea
         id="input"
         placeholder="Write here..."
@@ -40,6 +66,143 @@
       </div>
     </div>
     <div id="snackbar">Copied!</div>
+
+    <div id="modal">
+      <div class="title">
+        <h2 id="title-examples">Examples</h2>
+        <h2 id="title-about">About</h2>
+        <div id="close-modal" onclick="toggleModal('')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12 10.586L5.707 4.293a1 1 0 00-1.414 1.414L10.586 12l-6.293 6.293a1 1 0 101.414 1.414L12 13.414l6.293 6.293a1 1 0 101.414-1.414L13.414 12l6.293-6.293a1 1 0 00-1.414-1.414L12 10.586z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+      <div class="content">
+        <div id="content-examples">
+          <ul>
+            <li>
+              Simplified email pattern
+              <pre><code>start
+  repeat anyof :alphanumeric: + _ . - 1 to inf
+  @
+  repeat anyof :alphanumeric: . - 1 to inf
+end</code></pre>
+            </li>
+
+            <li>
+              Negative, whole, or decimal numbers
+              <pre><code>start
+  repeat - 0 to 1
+  repeat :digit: 0 to inf
+  repeat . 0 to 1
+  repeat :digit: 1 to inf
+end</code></pre>
+            </li>
+
+            <li>
+              URL pattern
+              <pre><code>start
+  http
+  repeat s 0 to 1
+  ://
+  repeat www. 0 to 1
+  repeat anyof - :alphanumeric: @ : % . _ \ + ~ # = 2 to 256
+  .
+  repeat :lowercase: 2 to 6
+  :boundary:
+  repeat anyof - :alphanumeric: @ : % . _ \ + ~ # ( ) ? / = 0 to inf
+end</code></pre>
+            </li>
+
+            <li>
+              Password with 1 lowercase letter, 1 uppercase letter, 1 number,
+              and contains at least 8 characters
+              <pre><code>:null: ifnextis repeat :any: 0 to inf and :digit:
+:null: ifnextis repeat :any: 0 to inf and :alphanumeric:
+:null: ifnextis repeat :any: 0 to inf and :uppercase:
+:null: ifnextis repeat :any: 0 to inf and :lowercase:
+start
+  repeat :any: 8 to inf
+end</code></pre>
+            </li>
+
+            <li>
+              Date in the form YYYY/MM/DD from 1900-01-01 to 2099-12-31
+              <pre><code>start
+  comment -------YEAR
+    19 or 20
+    repeat :digit: 2
+    /
+  comment -------MONTH
+    regex (
+    0
+    range 1 to 9
+
+    or
+
+    1
+    anyof 0 1 2
+    regex )
+    /
+  comment -------DATE
+    regex (
+    0
+    range 1 to 9
+
+    or
+
+    anyof 1 2
+    range 0 to 9
+
+    or
+
+    3
+    anyof 0 1
+    regex )
+end</code></pre>
+            </li>
+          </ul>
+        </div>
+        <div id="content-about">
+          <img src="assets/logo.png" alt="Regular Impressions Logo" />
+          <h2>Regular Impressions</h2>
+          <a href="https://github.com/keijeizei/regular-impressions"
+            ><img
+              src="https://img.shields.io/github/stars/keijeizei/regular-impressions?style=for-the-badge"
+              alt="GitHub stars"
+          /></a>
+          <p>
+            Regular Impressions is a simple tool for writing regular expressions
+            using a pseudocode-like language.
+          </p>
+          <p>
+            Created by
+            <a href="https://github.com/keijeizei">Zoren Tan</a>.
+          </p>
+          <p>
+            I made Regular Impressions as a side project in the summer of 2021
+            after finishing our course about regular expressions. This is just a
+            proof-of-concept project created with my limited skills at that
+            time, to demonstrate a pseudocode-like language as an alternative to
+            writing and storing regular expressions.
+          </p>
+          <p>
+            Regular Impressions is built with the help of
+            <a href="https://codemirror.net/">CodeMirror</a>.
+          </p>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="codemirrorinvoker.js"></script>
   <script src="constants.js"></script>
